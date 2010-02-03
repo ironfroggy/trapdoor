@@ -1,4 +1,3 @@
-from trapdoor import extension
 from trapdoor.extension import Extension
 
 __all__ = ['Calculator']
