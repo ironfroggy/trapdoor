@@ -1,14 +1,10 @@
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from trapdoor import extension
+from trapdoor.extension import Extension
 
-class Messager(QtCore.QObject):
+class Messager(Extension):
 
-    @QtCore.pyqtSlot(str)
+    @Extension.method(str)
     def showMessage(self, msg):
-        print "called showMessage()"
         QtGui.QMessageBox.information(None, "Info", msg)
 
-@extension
-def messager(**kwargs):
-    return Messager()
