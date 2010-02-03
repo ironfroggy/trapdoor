@@ -62,7 +62,7 @@ class Node(object):
         for modname, mod in extensions.items():
             for extname in mod:
                 if isinstance(mod[extname], type) and issubclass(mod[extname], Extension) and mod[extname] is not Extension:
-                    extension = mod[extname]()
+                    extension = mod[extname](node=self)
                     self.add_extension(extname, extension)
 
     def add_script(self, path):
