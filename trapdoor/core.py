@@ -12,11 +12,9 @@ class TrapdoorCore(object):
 
     def main(self, argv):
 
-        init_html_path = os.path.join(os.path.dirname(__file__), 'templates', 'init.html')
 
         app = QtGui.QApplication(sys.argv)
-        webView = QtWebKit.QWebView()
-        frame = webView.page().mainFrame() 
+        node = Node()
 
         appname = argv[1]
         manifest = yaml.load(open(os.path.join(appname, 'manifest.yaml')))
@@ -31,22 +29,33 @@ class TrapdoorCore(object):
         for js in manifest['js']:
             js_scripts.append(open(os.path.join(appname, js)).read())
 
-        webView.setHtml(open(init_html_path).read())
-
         for modname, mod in extensions.items():
             for extname in mod:
                 if isinstance(mod[extname], type) and issubclass(mod[extname], Extension) and mod[extname] is not Extension:
                     ext = mod[extname]()
-                    frame.addToJavaScriptWindowObject(extname, ext)
-                    frame.evaluateJavaScript(ext.generateJSWrapper(extname))
+                    node.frame.addToJavaScriptWindowObject(extname, ext)
+                    node.frame.evaluateJavaScript(ext.generateJSWrapper(extname))
 
      
         window = QtGui.QMainWindow()  
-        window.setCentralWidget(webView)  
+        window.setCentralWidget(node.webview)  
         window.show()  
 
         for js in js_scripts:
-           frame.evaluateJavaScript(js)
+           node.frame.evaluateJavaScript(js)
 
         sys.exit(app.exec_())  
 
+
+class Node(object):
+
+    def __init__(self):
+        self.webview = QtWebKit.QWebView()
+        self.frame = self.webview.page().mainFrame()
+
+
+        init_html_path = os.path.join(os.path.dirname(__file__), 'templates', 'init.html')
+        self.load_file(init_html_path)
+
+    def load_file(self, path):
+        self.webview.setHtml(open(path).read())
