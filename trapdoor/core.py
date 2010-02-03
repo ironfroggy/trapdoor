@@ -11,10 +11,10 @@ from trapdoor.extension import Extension
 class TrapdoorCore(object):
 
     def main(self, argv):
-
-
         app = QtGui.QApplication(sys.argv)
-        node = Node()
+        self.nodes = [Node()]
+
+        node = self.prime_node
 
         appname = argv[1]
         manifest = yaml.load(open(os.path.join(appname, 'manifest.yaml')))
@@ -46,6 +46,7 @@ class TrapdoorCore(object):
 
         sys.exit(app.exec_())  
 
+    prime_node = property(lambda self: self.nodes[0])
 
 class Node(object):
 
