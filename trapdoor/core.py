@@ -29,12 +29,8 @@ class TrapdoorCore(object):
         for js in manifest['js']:
             js_scripts.append(open(os.path.join(appname, js)).read())
 
-        for modname, mod in extensions.items():
-            for extname in mod:
-                if isinstance(mod[extname], type) and issubclass(mod[extname], Extension) and mod[extname] is not Extension:
-                    ext = mod[extname]()
-                    node.add_extension(extname, ext)
-     
+        node.add_extensions(extensions)
+    
         window = QtGui.QMainWindow()  
         window.setCentralWidget(node.webview)  
         window.show()  
@@ -62,3 +58,11 @@ class Node(object):
     def add_extension(self, extname, extension):
         self.frame.addToJavaScriptWindowObject(extname, extension)
         self.frame.evaluateJavaScript(extension.generateJSWrapper(extname))
+
+    def add_extensions(self, extensions):
+        for modname, mod in extensions.items():
+            for extname in mod:
+                if isinstance(mod[extname], type) and issubclass(mod[extname], Extension) and mod[extname] is not Extension:
+                    extension = mod[extname]()
+                    self.add_extension(extname, extension)
+ 
