@@ -14,7 +14,6 @@ class TrapdoorCore(object):
 
     def main(self, argv):
         self.appname = argv[1]
-        self.manifest = yaml.load(open(os.path.join(self.appname, 'manifest.yaml')))
 
         app = QtGui.QApplication(sys.argv)
         self.nodes = [Node()]
@@ -22,33 +21,21 @@ class TrapdoorCore(object):
 
         self.plugins = {}
         self.extensions = {}
+        self.main_plugin = PlugIn(self.appname)
+        self.plugins[self.appname] = self.main_plugin
 
-        for name in self.manifest.get('plugins', ()):
+        for name in self.main_plugin.manifest.get('plugins', ()):
             self.plugins[name] = plugin = PlugIn(name)
             self.extensions.update( plugin.load_extensions() )
 
-        self.extensions.update( self.load_extensions() )
+        self.extensions.update( self.main_plugin.load_extensions() )
         node.add_extensions(self.extensions)
 
         node.add_default_scripts()
-        for js in self.manifest['js']:
-            node.add_script(os.path.join(self.appname, js))
+        for plugin in self.plugins.values():
+            node.add_scripts_from_plugin(plugin)
 
         sys.exit(app.exec_())
-
-    def load_extensions(self):
-        extensions = {}
-
-        for ext in self.manifest['extensions']:
-            ext_globals = self.load_library(self.appname, ext)
-            extensions[ext] = ext_globals
-        return extensions
-
-    def load_library(self, app, extlibrary):
-        library_globals = {}
-        execfile(os.path.join(app, extlibrary + '.py'), library_globals)
-        return library_globals
-        
 
     prime_node = property(lambda self: self.nodes[0])
 
@@ -86,4 +73,8 @@ class Node(object):
     def add_scripts(self, paths):
         for path in paths:
             self.add_script(path)
-            
+    
+    def add_scripts_from_plugin(self, plugin):
+        for js in plugin.manifest.get('js', ()):
+            self.add_script(os.path.join(plugin.path, js))
+

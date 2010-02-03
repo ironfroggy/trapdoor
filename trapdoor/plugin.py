@@ -9,7 +9,7 @@ class PlugIn(object):
         self.plugin_name = plugin_name
 
         plugin_module = importlib.import_module(plugin_name)
-        plugin_path = os.path.dirname(plugin_module.__file__)
+        plugin_path = self.path = os.path.dirname(plugin_module.__file__)
         self.manifest = yaml.load(open(os.path.join(plugin_path, 'manifest.yaml')))
 
         self.module = plugin_module
