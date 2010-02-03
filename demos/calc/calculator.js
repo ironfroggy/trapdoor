@@ -10,5 +10,8 @@ function update() {
     $('#c').val(Calculator.add(a, b));
 };
 
-$('#a').change(update);
-$('#b').change(update);
+$('#a').keyup(update).focus();
+$('#b').keyup(update);
+
+$('#c').focus(function() { $('#a').focus(); });
+
