@@ -21,9 +21,9 @@ class TrapdoorCore(object):
         extensions = self.load_extensions()
         node.add_extensions(extensions)
 
-        window = QtGui.QMainWindow()  
-        window.setCentralWidget(node.webview)  
-        window.show()  
+        window = QtGui.QMainWindow()
+        window.setCentralWidget(node.webview)
+        window.show()
 
         node.add_default_scripts()
         for js in self.manifest['js']:
@@ -33,11 +33,17 @@ class TrapdoorCore(object):
 
     def load_extensions(self):
         extensions = {}
+
         for ext in self.manifest['extensions']:
-            ext_globals = {}
-            execfile(os.path.join(self.appname, ext + '.py'), ext_globals)
+            ext_globals = self.load_library(self.appname, ext)
             extensions[ext] = ext_globals
         return extensions
+
+    def load_library(self, app, extlibrary):
+        library_globals = {}
+        execfile(os.path.join(app, extlibrary + '.py'), library_globals)
+        return library_globals
+        
 
     prime_node = property(lambda self: self.nodes[0])
 
