@@ -1,3 +1,6 @@
+WindowManager.createWindow();
+
+
 document.write('<input id="a" />');
 document.write('<span> + </span>');
 document.write('<input id="b" />');

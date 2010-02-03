@@ -21,10 +21,6 @@ class TrapdoorCore(object):
         extensions = self.load_extensions()
         node.add_extensions(extensions)
 
-        window = QtGui.QMainWindow()
-        window.setCentralWidget(node.webview)
-        window.show()
-
         node.add_default_scripts()
         for js in self.manifest['js']:
             node.add_script(os.path.join(self.appname, js))
@@ -33,6 +29,8 @@ class TrapdoorCore(object):
 
     def load_extensions(self):
         extensions = {}
+
+        extensions['WindowManager'] = self.load_library('trapdoor/contrib/windowmanager', 'windowmanager')
 
         for ext in self.manifest['extensions']:
             ext_globals = self.load_library(self.appname, ext)
