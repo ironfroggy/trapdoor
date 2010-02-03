@@ -7,12 +7,9 @@ import yaml
 init_html_path = os.path.join(os.path.dirname(__file__), 'templates', 'init.html')
 
 
-def extension(f):
-    f.trapdoor_extension = True
-    return f
-
-
 def main(argv):
+    from trapdoor.extension import Extension
+
     app = QtGui.QApplication(sys.argv)  
   
     webView = QtWebKit.QWebView()  
@@ -35,8 +32,10 @@ def main(argv):
 
     for modname, mod in extensions.items():
         for extname in mod:
-            if getattr(mod[extname], 'trapdoor_extension', False):
-                frame.addToJavaScriptWindowObject(extname, mod[extname]())
+            if isinstance(mod[extname], type) and issubclass(mod[extname], Extension) and mod[extname] is not Extension:
+                ext = mod[extname]()
+                frame.addToJavaScriptWindowObject(extname, ext)
+                frame.evaluateJavaScript(ext.generateJSWrapper(extname))
 
  
     window = QtGui.QMainWindow()  

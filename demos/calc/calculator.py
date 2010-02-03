@@ -1,17 +1,11 @@
-from PyQt4 import QtCore
-
 from trapdoor import extension
+from trapdoor.extension import Extension
 
-class Calculator(QtCore.QObject):
+__all__ = ['Calculator']
 
-    @QtCore.pyqtSlot(int, int)
+class Calculator(Extension):
+
+    @Extension.method(int, int)
     def add(self, a, b):
         self._result = a + b
 
-    def _result(self):
-        return self._result
-    result = QtCore.pyqtProperty(int, fget=_result)
-
-@extension
-def calculator(**kwargs):
-    return Calculator()

@@ -7,8 +7,7 @@ document.write('<input id="c" />');
 function update() {
     var a = $('#a').val();
     var b = $('#b').val();
-    calculator.add(a, b);
-    $('#c').val(calculator.result);
+    $('#c').val(Calculator.add(a, b));
 };
 
 $('#a').change(update);
