@@ -25,14 +25,9 @@ class TrapdoorCore(object):
         window.setCentralWidget(node.webview)  
         window.show()  
 
-        js_scripts = []
-        for js_file in ('jquery_dev.js', 'trapdoor.js'):
-            js_scripts.append(open(os.path.join(os.path.dirname(__file__), 'js', js_file)).read())
+        node.add_default_scripts()
         for js in self.manifest['js']:
-            js_scripts.append(open(os.path.join(self.appname, js)).read())
-    
-        for js in js_scripts:
-           node.frame.evaluateJavaScript(js)
+            node.add_script(os.path.join(self.appname, js))
 
         sys.exit(app.exec_())
 
@@ -69,4 +64,15 @@ class Node(object):
                 if isinstance(mod[extname], type) and issubclass(mod[extname], Extension) and mod[extname] is not Extension:
                     extension = mod[extname]()
                     self.add_extension(extname, extension)
- 
+
+    def add_script(self, path):
+        self.frame.evaluateJavaScript(open(path).read())
+
+    def add_default_scripts(self):
+        for js_file in ('jquery_dev.js', 'trapdoor.js'):
+            self.add_script(os.path.join(os.path.dirname(__file__), 'js', js_file))
+    
+    def add_scripts(self, paths):
+        for path in paths:
+            self.add_script(path)
+            
