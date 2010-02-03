@@ -11,19 +11,14 @@ from trapdoor.extension import Extension
 class TrapdoorCore(object):
 
     def main(self, argv):
+        self.appname = argv[1]
+        self.manifest = yaml.load(open(os.path.join(self.appname, 'manifest.yaml')))
+
         app = QtGui.QApplication(sys.argv)
         self.nodes = [Node()]
-
         node = self.prime_node
 
-        appname = argv[1]
-        manifest = yaml.load(open(os.path.join(appname, 'manifest.yaml')))
-
-        extensions = {}
-        for ext in manifest['extensions']:
-            ext_globals = {}
-            execfile(os.path.join(appname, ext + '.py'), ext_globals)
-            extensions[ext] = ext_globals
+        extensions = self.load_extensions()
         node.add_extensions(extensions)
 
         window = QtGui.QMainWindow()  
@@ -33,13 +28,21 @@ class TrapdoorCore(object):
         js_scripts = []
         for js_file in ('jquery_dev.js', 'trapdoor.js'):
             js_scripts.append(open(os.path.join(os.path.dirname(__file__), 'js', js_file)).read())
-        for js in manifest['js']:
-            js_scripts.append(open(os.path.join(appname, js)).read())
+        for js in self.manifest['js']:
+            js_scripts.append(open(os.path.join(self.appname, js)).read())
     
         for js in js_scripts:
            node.frame.evaluateJavaScript(js)
 
-        sys.exit(app.exec_())  
+        sys.exit(app.exec_())
+
+    def load_extensions(self):
+        extensions = {}
+        for ext in self.manifest['extensions']:
+            ext_globals = {}
+            execfile(os.path.join(self.appname, ext + '.py'), ext_globals)
+            extensions[ext] = ext_globals
+        return extensions
 
     prime_node = property(lambda self: self.nodes[0])
 
