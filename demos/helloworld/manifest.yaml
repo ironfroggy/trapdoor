@@ -2,3 +2,5 @@ extensions:
  - hello
 js:
  - hello.js
+plugins:
+ - windowmanager

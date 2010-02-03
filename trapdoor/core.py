@@ -30,7 +30,7 @@ class TrapdoorCore(object):
     def load_extensions(self):
         extensions = {}
 
-        extensions['WindowManager'] = self.load_library('trapdoor/contrib/windowmanager', 'windowmanager')
+        extensions['windowmanager'] = self.load_library('trapdoor/contrib/windowmanager', 'windowmanager')
 
         for ext in self.manifest['extensions']:
             ext_globals = self.load_library(self.appname, ext)
