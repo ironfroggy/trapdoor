@@ -3,4 +3,4 @@ extensions:
 js:
  - hello.js
 plugins:
- - windowmanager
+ - trapdoor.contrib.windowmanager

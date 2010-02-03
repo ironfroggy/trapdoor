@@ -2,3 +2,5 @@ extensions:
  - calculator
 js:
  - calculator.js
+plugins:
+ - trapdoor.contrib.windowmanager

@@ -6,6 +6,8 @@ import yaml
 from PyQt4 import QtCore, QtGui, QtWebKit 
 
 from trapdoor.extension import Extension
+from trapdoor.plugin import PlugIn
+from trapdoor.utils import importlib
 
 
 class TrapdoorCore(object):
@@ -18,8 +20,15 @@ class TrapdoorCore(object):
         self.nodes = [Node()]
         node = self.prime_node
 
-        extensions = self.load_extensions()
-        node.add_extensions(extensions)
+        self.plugins = {}
+        self.extensions = {}
+
+        for name in self.manifest.get('plugins', ()):
+            self.plugins[name] = plugin = PlugIn(name)
+            self.extensions.update( plugin.load_extensions() )
+
+        self.extensions.update( self.load_extensions() )
+        node.add_extensions(self.extensions)
 
         node.add_default_scripts()
         for js in self.manifest['js']:
@@ -29,8 +38,6 @@ class TrapdoorCore(object):
 
     def load_extensions(self):
         extensions = {}
-
-        extensions['windowmanager'] = self.load_library('trapdoor/contrib/windowmanager', 'windowmanager')
 
         for ext in self.manifest['extensions']:
             ext_globals = self.load_library(self.appname, ext)
