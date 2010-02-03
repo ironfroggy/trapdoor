@@ -56,4 +56,5 @@ but gives the idea.
     $('#b').keyup(update);
 
     $('#c').focus(function() { $('#a').focus(); });
-   
+
+See the `demos/` directory for these examples.
