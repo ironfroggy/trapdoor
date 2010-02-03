@@ -33,9 +33,7 @@ class TrapdoorCore(object):
             for extname in mod:
                 if isinstance(mod[extname], type) and issubclass(mod[extname], Extension) and mod[extname] is not Extension:
                     ext = mod[extname]()
-                    node.frame.addToJavaScriptWindowObject(extname, ext)
-                    node.frame.evaluateJavaScript(ext.generateJSWrapper(extname))
-
+                    node.add_extension(extname, ext)
      
         window = QtGui.QMainWindow()  
         window.setCentralWidget(node.webview)  
@@ -60,3 +58,7 @@ class Node(object):
 
     def load_file(self, path):
         self.webview.setHtml(open(path).read())
+
+    def add_extension(self, extname, extension):
+        self.frame.addToJavaScriptWindowObject(extname, extension)
+        self.frame.evaluateJavaScript(extension.generateJSWrapper(extname))
