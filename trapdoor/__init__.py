@@ -24,8 +24,8 @@ def main(argv):
         ext_globals = {}
         execfile(os.path.join(appname, ext + '.py'), ext_globals)
         extensions[ext] = ext_globals
-        print "ext globals", ext_globals
     js_scripts = []
+    js_scripts.append(open(os.path.join(os.path.dirname(__file__), 'js', 'jquery_dev.js')).read())
     for js in manifest['js']:
         js_scripts.append(open(os.path.join(appname, js)).read())
 
