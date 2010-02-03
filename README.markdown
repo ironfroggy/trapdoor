@@ -58,3 +58,17 @@ but gives the idea.
     $('#c').focus(function() { $('#a').focus(); });
 
 See the `demos/` directory for these examples.
+
+
+Plans
+-----
+
+There is only one webkit frame bound to a window right now. This is going to
+get more flexible shortly. The process will be to initialize a hidden frame,
+first. Into this will be loaded init.html and all the standard JS and built-in
+extensions. One of these standard extensions will be WindowManager, which
+can create a window and bind the frame to it for display.
+
+Later, the hidden frames (they'll be called Nodes) will be able to spawn more.
+Each node will be able to get restricted use of extensions, so one might
+spawn a node to run 3rd party code in without any File IO, for example.
