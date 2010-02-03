@@ -1,0 +1,4 @@
+extensions:
+ - hello
+js:
+ - hello.js
