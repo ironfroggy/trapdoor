@@ -18,23 +18,24 @@ class TrapdoorCore(object):
 
         appname = argv[1]
         manifest = yaml.load(open(os.path.join(appname, 'manifest.yaml')))
+
         extensions = {}
         for ext in manifest['extensions']:
             ext_globals = {}
             execfile(os.path.join(appname, ext + '.py'), ext_globals)
             extensions[ext] = ext_globals
+        node.add_extensions(extensions)
+
+        window = QtGui.QMainWindow()  
+        window.setCentralWidget(node.webview)  
+        window.show()  
+
         js_scripts = []
         for js_file in ('jquery_dev.js', 'trapdoor.js'):
             js_scripts.append(open(os.path.join(os.path.dirname(__file__), 'js', js_file)).read())
         for js in manifest['js']:
             js_scripts.append(open(os.path.join(appname, js)).read())
-
-        node.add_extensions(extensions)
     
-        window = QtGui.QMainWindow()  
-        window.setCentralWidget(node.webview)  
-        window.show()  
-
         for js in js_scripts:
            node.frame.evaluateJavaScript(js)
 
