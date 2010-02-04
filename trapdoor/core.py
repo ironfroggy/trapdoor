@@ -39,7 +39,7 @@ class TrapdoorCore(object):
 
     prime_node = property(lambda self: self.nodes[0])
 
-class Node(object):
+class Node(QtCore.QObject):
 
     def __init__(self):
         self.webview = QtWebKit.QWebView()
