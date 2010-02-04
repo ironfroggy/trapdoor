@@ -1,0 +1,6 @@
+extensions:
+ - counter
+js:
+ - counterdemo.js
+plugins:
+ - trapdoor.contrib.windowmanager
