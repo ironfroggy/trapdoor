@@ -39,9 +39,13 @@ class TrapdoorCore(object):
 
     prime_node = property(lambda self: self.nodes[0])
 
-class Node(QtCore.QObject):
+class Node(Extension):
 
-    def __init__(self):
+    def __init__(self, node=None, **kwargs):
+        super(Node, self).__init__(node=node, **kwargs)
+        if node is None:
+            node=self
+
         self.webview = QtWebKit.QWebView()
         self.frame = self.webview.page().mainFrame()
 
@@ -77,4 +81,5 @@ class Node(QtCore.QObject):
     def add_scripts_from_plugin(self, plugin):
         for js in plugin.manifest.get('js', ()):
             self.add_script(os.path.join(plugin.path, js))
+
 

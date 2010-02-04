@@ -27,7 +27,11 @@ class Extension(QtCore.QObject):
                 except AttributeError:
                     result_line = ''
                 else:
-                    result_line = "   return _%s.result_%s;" % (name, result_type)
+                    if issubclass(method.result_type, Extension):
+                        # This returns an Extension object to be passed back to JS
+                        result_line = "   return _result_extobject;"
+                    else:
+                        result_line = "   return _%s.result_%s;" % (name, result_type)
 
                 lines.extend([
                     "%s: function () {" % (attr,),
@@ -38,7 +42,6 @@ class Extension(QtCore.QObject):
 
         lines.append('};')
         code = '\n'.join(lines)
-
         return code
 
     @classmethod
@@ -72,3 +75,11 @@ class Extension(QtCore.QObject):
         return getattr(self, '_result', None)
     result_str = QtCore.pyqtProperty(str, fget=__get_result_str)
 
+    def _get_result(self):
+        self.__result
+        return self.__result
+    def _set_result(self, value):
+        self.__result = value
+        if isinstance(value, Extension):
+            self.node.frame.addToJavaScriptWindowObject('_result_extobject', value)
+    _result = property(_get_result, _set_result)
