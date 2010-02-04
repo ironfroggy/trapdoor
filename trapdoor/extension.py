@@ -9,9 +9,12 @@ class ExtensionType(type):
 
 class Extension(QtCore.QObject):
 
-    def __init__(self, node, *args, **kwargs):
-        self.node = node
+    def __init__(self, *args, **kwargs):
+        self.nodes = []
         super(Extension, self).__init__(*args, **kwargs)
+
+    def register_node(self, node):
+        self.nodes.append(node)
 
     def generateJSWrapper(self, name):
         lines = [

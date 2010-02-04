@@ -1,4 +1,4 @@
-WindowManager.createWindow();
+windowmanager.createWindow();
 
 var t = 500;
 
@@ -10,8 +10,8 @@ document.write('<input id="a" />' +
 
 function update() {
     $('#t').val(t);
-    $('#a').val(Counter.get());
-    Counter.incr();
+    $('#a').val(counter.get());
+    counter.incr();
 
     window.setTimeout(update, t);
 }

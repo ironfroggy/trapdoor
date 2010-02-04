@@ -41,10 +41,8 @@ class TrapdoorCore(object):
 
 class Node(Extension):
 
-    def __init__(self, node=None, **kwargs):
-        super(Node, self).__init__(node=node, **kwargs)
-        if node is None:
-            node=self
+    def __init__(self, **kwargs):
+        super(Node, self).__init__(**kwargs)
 
         self.webview = QtWebKit.QWebView()
         self.frame = self.webview.page().mainFrame()
@@ -57,14 +55,16 @@ class Node(Extension):
         self.webview.setHtml(open(path).read())
 
     def add_extension(self, extname, extension):
+        print "Adding extension:", extname, repr(extension)
         self.frame.addToJavaScriptWindowObject(extname, extension)
         self.frame.evaluateJavaScript(extension.generateJSWrapper(extname))
 
     def add_extensions(self, extensions):
         for modname, mod in extensions.items():
             for extname in mod:
-                if isinstance(mod[extname], type) and issubclass(mod[extname], Extension) and mod[extname] is not Extension:
-                    extension = mod[extname](node=self)
+                if isinstance(mod[extname], Extension):
+                    extension = mod[extname]
+                    extension.register_node(self)
                     self.add_extension(extname, extension)
 
     def add_script(self, path):

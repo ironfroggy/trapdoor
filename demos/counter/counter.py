@@ -12,3 +12,5 @@ class Counter(Extension):
     @Extension.method()
     def incr(self):
         self.value += 1
+
+counter = Counter()
