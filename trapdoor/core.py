@@ -55,17 +55,19 @@ class Node(Extension):
         self.webview.setHtml(open(path).read())
 
     def add_extension(self, extname, extension):
-        print "Adding extension:", extname, repr(extension)
         self.frame.addToJavaScriptWindowObject(extname, extension)
         self.frame.evaluateJavaScript(extension.generateJSWrapper(extname))
 
+    _nameless = 0
+    def add_nameless_extension(self, extension):
+        name = '_nameless_%d' % (self._nameless,)
+        self.add_extension(name, extension)
+        return name
+
     def add_extensions(self, extensions):
-        for modname, mod in extensions.items():
-            for extname in mod:
-                if isinstance(mod[extname], Extension):
-                    extension = mod[extname]
-                    extension.register_node(self)
-                    self.add_extension(extname, extension)
+        for extpath, extension_factory in extensions.items():
+            extension = extension_factory(node=self)
+            self.add_extension(extpath.rsplit('.', 1)[1], extension)
 
     def add_script(self, path):
         self.frame.evaluateJavaScript(open(path).read())

@@ -1,5 +1,5 @@
 extensions:
- - hello
+ - hello.Messager
 js:
  - hello.js
 plugins:

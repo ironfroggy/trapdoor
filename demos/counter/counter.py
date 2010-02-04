@@ -1,4 +1,4 @@
-from trapdoor.extension import Extension
+from trapdoor.extension import Extension, Factory
 
 class Counter(Extension):
 
@@ -13,4 +13,4 @@ class Counter(Extension):
     def incr(self):
         self.value += 1
 
-counter = Counter()
+counter = Factory(Counter)

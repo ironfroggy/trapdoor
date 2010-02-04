@@ -9,12 +9,10 @@ class ExtensionType(type):
 
 class Extension(QtCore.QObject):
 
-    def __init__(self, *args, **kwargs):
-        self.nodes = []
+    def __init__(self, node=None, *args, **kwargs):
+        self.node = node
         super(Extension, self).__init__(*args, **kwargs)
 
-    def register_node(self, node):
-        self.nodes.append(node)
 
     def generateJSWrapper(self, name):
         lines = [
@@ -84,5 +82,14 @@ class Extension(QtCore.QObject):
     def _set_result(self, value):
         self.__result = value
         if isinstance(value, Extension):
-            self.node.frame.addToJavaScriptWindowObject('_result_extobject', value)
+            unique_name = self.node.add_nameless_extension(value)
+            self.node.frame.evaluateJavaScript('_result_extobject = %s;' % (unique_name,))
     _result = property(_get_result, _set_result)
+
+def Factory(cls):
+    class ExtensionFactory(Extension):
+        @Extension.method()
+        @Extension.returns(cls)
+        def create(self):
+            self._result = cls(node=self.node)
+    return ExtensionFactory

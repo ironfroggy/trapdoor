@@ -7,7 +7,7 @@ class WindowManager(Extension):
     @Extension.method()
     def createWindow(self):
         window = self.qtwindow = QtGui.QMainWindow()
-        window.setCentralWidget(self.nodes[0].webview)
+        window.setCentralWidget(self.node.webview)
         window.show()
 
 windowmanager = WindowManager()

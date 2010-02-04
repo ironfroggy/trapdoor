@@ -17,9 +17,10 @@ class PlugIn(object):
     def load_extensions(self):
         extensions = {}
 
-        for ext in self.manifest.get('extensions', ()):
-            mod = importlib.import_module('.'.join((self.plugin_name, ext)))
-            extensions[ext] = mod.__dict__ 
+        for extpath in self.manifest.get('extensions', ()):
+            library, extname = extpath.rsplit('.', 1)
+            mod = importlib.import_module('.'.join((self.plugin_name, library)))
+            extensions[extpath] = getattr(mod, extname)
         return extensions
 
     def load_library(self, app, extlibrary):

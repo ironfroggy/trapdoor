@@ -1,5 +1,5 @@
 extensions:
- - calculator
+ - calculator.Calculator
 js:
  - calculator.js
 plugins:

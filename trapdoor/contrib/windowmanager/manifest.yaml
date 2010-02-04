@@ -1,2 +1,2 @@
 extensions:
- - windowmanager
+ - windowmanager.WindowManager
