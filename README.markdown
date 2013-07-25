@@ -1,7 +1,7 @@
 Trapdoor
 ========
 
-Intrdocution
+Introduction
 ------------
 
 Trapdoor is a web-based desktop framework. Confused yet?
